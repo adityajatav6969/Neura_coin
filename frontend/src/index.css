@@ -1,0 +1,69 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neura-bg: #0A0D14;
+  --color-neura-card: rgba(20, 25, 35, 0.7);
+  --color-neura-border: rgba(45, 55, 72, 0.5);
+  --color-neura-blue: #00F0FF;
+  --color-neura-purple: #B026FF;
+  --color-neura-glow: rgba(0, 240, 255, 0.3);
+}
+
+@layer base {
+  body {
+    background-color: var(--color-neura-bg);
+    color: #ffffff;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    /* Cyberpunk Grid Background */
+    background-image: 
+      linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+    background-size: 30px 30px;
+    background-position: center center;
+  }
+}
+
+@layer utilities {
+  .glass-card {
+    background: var(--color-neura-card);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--color-neura-border);
+    border-radius: 1rem;
+  }
+  
+  .neon-text-blue {
+    text-shadow: 0 0 10px var(--color-neura-blue), 0 0 20px var(--color-neura-glow);
+  }
+
+  .neon-text-purple {
+    text-shadow: 0 0 10px var(--color-neura-purple), 0 0 20px rgba(176, 38, 255, 0.3);
+  }
+
+  .neon-border {
+    border: 1px solid var(--color-neura-blue);
+    box-shadow: 0 0 10px var(--color-neura-glow), inset 0 0 10px var(--color-neura-glow);
+  }
+
+  .neon-border-purple {
+    border: 1px solid var(--color-neura-purple);
+    box-shadow: 0 0 10px rgba(176, 38, 255, 0.3), inset 0 0 10px rgba(176, 38, 255, 0.3);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-neura-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(45, 55, 72, 0.8);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neura-blue);
+}
