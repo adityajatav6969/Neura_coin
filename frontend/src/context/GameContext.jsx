@@ -47,10 +47,10 @@ export function GameProvider({ children }) {
     const devLogin = async () => {
       // Mock user for local browser dev
       const mockUser = {
-        id: '12345678',
-        first_name: 'Dev',
-        last_name: 'User',
-        username: 'dev_user'
+        id: '99999999', // New ID to trigger "New User" flow
+        first_name: 'Fresh',
+        last_name: 'Tester',
+        username: 'fresh_tester_' + Math.floor(Math.random() * 1000)
       };
       const authData = await api.authenticate('dev_mode', mockUser);
       api.setToken(authData.token);
