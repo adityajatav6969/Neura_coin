@@ -5,10 +5,12 @@ import Machines from './pages/Machines';
 import Upgrades from './pages/Upgrades';
 import Missions from './pages/Missions';
 import Profile from './pages/Profile';
+import { GameProvider } from './context/GameContext';
 
 export default function App() {
   return (
-    <Router>
+    <GameProvider>
+      <Router>
       <div className="min-h-screen text-white pb-20 max-w-md mx-auto relative shadow-2xl overflow-hidden bg-[#0A0D14]">
         {/* Main Content Area */}
         <div className="h-full z-10 relative">
@@ -25,5 +27,6 @@ export default function App() {
         <Navigation />
       </div>
     </Router>
+    </GameProvider>
   );
 }

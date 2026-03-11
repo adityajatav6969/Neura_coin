@@ -1,23 +1,34 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import NeuralCore from '../components/NeuralCore';
+import { useGame } from '../context/GameContext';
+import { api } from '../utils/api';
 
 export default function Home() {
-  const [coins, setCoins] = useState(1250450);
-  const [energy, setEnergy] = useState(950);
+  const { user, updateUser, loading } = useGame();
   const [taps, setTaps] = useState([]);
+  const [localEnergy, setLocalEnergy] = useState(0);
+  const [localCoins, setLocalCoins] = useState(0);
+
+  useEffect(() => {
+    if (user) {
+      setLocalEnergy(user.energy);
+      setLocalCoins(user.coins);
+    }
+  }, [user]);
   
-  const handleTap = (e) => {
-    if (energy <= 0) return;
+  const handleTap = useCallback(async (e) => {
+    if (localEnergy <= 0 || !user) return;
     
-    setCoins(prev => prev + 25);
-    setEnergy(prev => Math.max(0, prev - 1));
+    // Optimistic UI updates
+    const tapValue = user.tapPower || 1;
+    setLocalCoins(prev => prev + tapValue);
+    setLocalEnergy(prev => Math.max(0, prev - 1));
     
     // Create floating number effect
     const newTap = {
       id: Date.now(),
-      amount: 25,
-      // Randomize position slightly within the core area
+      amount: tapValue,
       x: Math.random() * 40 - 20, 
       y: Math.random() * 40 - 20
     };
@@ -26,15 +37,39 @@ export default function Home() {
     setTimeout(() => {
       setTaps(prev => prev.filter(t => t.id !== newTap.id));
     }, 1000);
-  };
 
-  // Auto regenerate energy
+    try {
+      // Direct API call for each tap (could be debounced/batched in future)
+      const result = await api.tap();
+      updateUser(result);
+    } catch (err) {
+      console.error('Tap failed:', err);
+    }
+  }, [localEnergy, user, updateUser]);
+
+  // Auto regenerate energy visually
   useEffect(() => {
     const timer = setInterval(() => {
-      setEnergy(prev => Math.min(1000, prev + 3));
+      if (user && localEnergy < user.maxEnergy) {
+        setLocalEnergy(prev => Math.min(user.maxEnergy, prev + 3));
+      }
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
+  }, [user, localEnergy]);
+
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center bg-[#0A0D14]">
+      <div className="text-[#00F0FF] animate-pulse font-mono tracking-widest uppercase">Initializing Neural Link...</div>
+    </div>
+  );
+
+  if (!user) return (
+    <div className="h-screen flex items-center justify-center bg-[#0A0D14]">
+      <div className="text-red-500 font-mono text-center px-4">
+        Connection Interrupted. Please open in Telegram.
+      </div>
+    </div>
+  );
 
   return (
     <div className="p-4 flex flex-col h-full min-h-screen">
@@ -47,12 +82,12 @@ export default function Home() {
             </div>
           </div>
           <div>
-            <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Neural Architect</p>
-            <p className="font-bold text-sm">Alex_Neura</p>
+            <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{user.title || 'Neural Trainee'}</p>
+            <p className="font-bold text-sm">{user.username}</p>
           </div>
         </div>
         <div className="glass-card px-3 py-1 text-xs text-[#00F0FF] font-mono neon-border rounded-full flex items-center shadow-lg shadow-[#00F0FF]/20">
-          <span className="mr-2">💳</span> 0x...4F2b
+          <span className="mr-2">✨</span> Level {user.level}
         </div>
       </header>
 
@@ -61,29 +96,29 @@ export default function Home() {
         <div className="glass-card p-3 flex flex-col items-center justify-center rounded-2xl relative overflow-hidden group">
           <div className="absolute inset-0 bg-gradient-to-b from-[#00F0FF]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-1">Tap Power</span>
-          <span className="text-xl font-bold text-[#00F0FF] neon-text-blue">25</span>
+          <span className="text-xl font-bold text-[#00F0FF] neon-text-blue">{user.tapPower}</span>
         </div>
         <div className="glass-card p-3 flex flex-col items-center justify-center rounded-2xl relative overflow-hidden group border border-[#B026FF]/30 hover:border-[#B026FF]/60 transition-colors">
           <div className="absolute inset-0 bg-gradient-to-b from-[#B026FF]/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
           <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-1">Auto Mining</span>
-          <span className="text-xl font-bold text-[#B026FF] neon-text-purple">120<span className="text-xs text-gray-500 ml-1">/min</span></span>
+          <span className="text-xl font-bold text-[#B026FF] neon-text-purple">{user.autoMiningRate}<span className="text-xs text-gray-500 ml-1">/min</span></span>
         </div>
         <div className="glass-card p-3 flex flex-col items-center justify-center rounded-2xl">
           <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider mb-1">Rank</span>
-          <span className="text-xl font-bold">#1,204</span>
+          <span className="text-xl font-bold">#{user.level * 100}</span>
         </div>
       </div>
 
       {/* Main Balance */}
       <div className="text-center mb-2 flex flex-col items-center">
         <h1 className="text-5xl font-black mb-1 tabular-nums tracking-tight">
-          {coins.toLocaleString()}
+          {localCoins.toLocaleString()}
         </h1>
         <p className="text-[#00F0FF] text-sm tracking-[0.2em] font-bold uppercase mb-4 neon-text-blue">
           Neura Coin
         </p>
         <div className="glass-card px-4 py-1.5 rounded-full inline-flex items-center text-xs text-gray-300 neon-border-purple shadow-lg shadow-[#B026FF]/20">
-          <span className="text-[#B026FF] mr-2">✨</span> Level 7 AI Architect
+          <span className="text-[#B026FF] mr-2">✨</span> Level {user.level} {user.title}
         </div>
       </div>
 
@@ -124,13 +159,13 @@ export default function Home() {
             <span className="font-serif italic mr-1 text-sm">⚡</span> Energy / Neural Power
           </span>
           <span className="text-white">
-            {energy} <span className="text-gray-500">/ 1000</span>
+            {localEnergy} <span className="text-gray-500">/ {user.maxEnergy}</span>
           </span>
         </div>
         <div className="h-3 w-full bg-[#141923] rounded-full overflow-hidden border border-[#2D3748]">
           <div 
             className="h-full bg-gradient-to-r from-[#00F0FF] to-[#B026FF] transition-all duration-300 relative shadow-[0_0_10px_rgba(0,240,255,0.5)]"
-            style={{ width: `${(energy / 1000) * 100}%` }}
+            style={{ width: `${(localEnergy / user.maxEnergy) * 100}%` }}
           >
             <div className="absolute inset-0 bg-white/20 animate-pulse" />
           </div>
