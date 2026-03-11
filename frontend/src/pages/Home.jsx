@@ -5,7 +5,7 @@ import { useGame } from '../context/GameContext';
 import { api } from '../utils/api';
 
 export default function Home() {
-  const { user, updateUser, loading } = useGame();
+  const { user, updateUser, loading, error } = useGame();
   const [taps, setTaps] = useState([]);
   const [localEnergy, setLocalEnergy] = useState(0);
   const [localCoins, setLocalCoins] = useState(0);
