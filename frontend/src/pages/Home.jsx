@@ -66,7 +66,18 @@ export default function Home() {
   if (!user) return (
     <div className="h-screen flex items-center justify-center bg-[#0A0D14]">
       <div className="text-red-500 font-mono text-center px-4">
-        Connection Interrupted. Please open in Telegram.
+        <p className="mb-2">Connection Interrupted.</p>
+        {error ? (
+          <p className="text-xs text-gray-500 uppercase tracking-widest">{error}</p>
+        ) : (
+          <p className="text-xs text-gray-500 uppercase tracking-widest">Please open in Telegram.</p>
+        )}
+        <button 
+          onClick={() => window.location.reload()}
+          className="mt-6 px-4 py-2 border border-red-500/30 rounded-lg text-[10px] uppercase tracking-widest hover:bg-red-500/10 transition-colors"
+        >
+          Reconnect
+        </button>
       </div>
     </div>
   );

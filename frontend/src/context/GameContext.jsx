@@ -38,7 +38,7 @@ export function GameProvider({ children }) {
         }
       } catch (err) {
         console.error('Failed to initialize game:', err);
-        setError(err.message);
+        setError(err.message || 'Unknown connection error');
       } finally {
         setLoading(false);
       }
@@ -66,7 +66,7 @@ export function GameProvider({ children }) {
   };
 
   return (
-    <GameContext.Provider value={{ user, loading, error, updateUser }}>
+    <GameContext.Provider value={{ user, loading, error, setError, updateUser }}>
       {children}
     </GameContext.Provider>
   );
