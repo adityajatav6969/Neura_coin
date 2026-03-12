@@ -59,7 +59,7 @@ router.post('/telegram', async (req, res) => {
 
     const token = jwt.sign(
       { telegramId: user.telegramId },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || 'neura_coin_default_jwt_secret_2026',
       { expiresIn: '7d' }
     );
 
