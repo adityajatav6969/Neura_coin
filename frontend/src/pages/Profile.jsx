@@ -5,6 +5,9 @@ export default function Profile() {
 
   if (!user) return null;
 
+  const totalMachines = user.machines?.filter(m => m.level > 0).length || user.machines?.length || 0;
+  const referralCount = Array.isArray(user.referrals) ? user.referrals.length : (user.referrals || 0);
+
   return (
     <div className="p-4 flex flex-col h-full min-h-screen">
       <div className="flex flex-col items-center mt-6 mb-8 text-center">
@@ -34,27 +37,27 @@ export default function Profile() {
           <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center">
             <span className="mr-1 text-sm">⛏️</span> Total Mined
           </span>
-          <span className="text-xl font-black text-white">{user.coins.toLocaleString()}</span>
+          <span className="text-xl font-black text-white">{(user.totalCoinsMined || user.coins || 0).toLocaleString()}</span>
         </div>
         <div className="glass-card p-4 rounded-2xl flex flex-col">
           <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center">
             <span className="mr-1 text-sm">👆</span> Total Taps
           </span>
-          <span className="text-xl font-black text-white">{user.stats?.totalTaps || 0}</span>
+          <span className="text-xl font-black text-white">{(user.totalTaps || 0).toLocaleString()}</span>
         </div>
         <div className="glass-card p-4 rounded-2xl flex flex-col">
           <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center">
             <span className="mr-1 text-sm">⚡</span> Machines
           </span>
           <span className="text-xl font-black text-[#B026FF] neon-text-purple">
-            {user.machines.filter(m => m.level > 0).length}
+            {totalMachines}
           </span>
         </div>
         <div className="glass-card p-4 rounded-2xl flex flex-col">
           <span className="text-[10px] text-gray-500 uppercase font-bold tracking-widest mb-1 flex items-center">
             <span className="mr-1 text-sm">👥</span> Referrals
           </span>
-          <span className="text-xl font-black text-[#00F0FF] neon-text-blue">{user.referrals || 0}</span>
+          <span className="text-xl font-black text-[#00F0FF] neon-text-blue">{referralCount}</span>
         </div>
       </div>
       

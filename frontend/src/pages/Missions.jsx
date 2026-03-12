@@ -12,7 +12,8 @@ export default function Missions() {
     const fetchMissions = async () => {
       try {
         const data = await api.getMissions();
-        setMissions(data);
+        // Backend returns { missions: [...] }
+        setMissions(data.missions || data || []);
       } catch (err) {
         console.error('Failed to fetch missions:', err);
       } finally {
@@ -27,10 +28,10 @@ export default function Missions() {
     setClaiming(missionId);
     try {
       const result = await api.completeMission(missionId);
-      updateUser(result.user);
+      updateUser(result);
       // Refresh mission list
       const data = await api.getMissions();
-      setMissions(data);
+      setMissions(data.missions || data || []);
     } catch (err) {
       console.error('Claim failed:', err);
       alert(err.message);
@@ -60,7 +61,7 @@ export default function Missions() {
           const canClaim = mission.progress >= mission.target && !mission.completed;
           
           return (
-            <div key={mission.id} className={`glass-card p-4 rounded-2xl relative transition-all duration-300 ${
+            <div key={mission.missionId} className={`glass-card p-4 rounded-2xl relative transition-all duration-300 ${
               mission.completed ? 'border-[#00F0FF]/50 shadow-[0_0_15px_rgba(0,240,255,0.1)]' : 'border-[#2D3748]/50'
             }`}>
               {mission.completed && (
@@ -71,7 +72,7 @@ export default function Missions() {
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl mr-3 shrink-0 ${
                   mission.completed ? 'bg-[#00F0FF]/20 border border-[#00F0FF]/50' : 'bg-[#141923] border border-[#2D3748]'
                 }`}>
-                  {mission.type === 'tap' ? '👆' : mission.type === 'machine' ? '⚙️' : '👥'}
+                  {mission.icon || (mission.type === 'tap' ? '👆' : mission.type === 'machine' ? '⚙️' : '👥')}
                 </div>
                 <div className="flex-1">
                   <h3 className={`font-bold leading-tight ${mission.completed ? 'text-[#00F0FF]' : 'text-white'}`}>
@@ -95,7 +96,7 @@ export default function Missions() {
                 <div className="h-2 w-full bg-[#141923] rounded-full overflow-hidden border border-[#2D3748]">
                   <div 
                     className={`h-full transition-all duration-500 ${
-                      mission.completed ? 'bg-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.8)]' : 'bg-gray-600'
+                      mission.completed || canClaim ? 'bg-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.8)]' : 'bg-gray-600'
                     }`}
                     style={{ width: `${percentage}%` }}
                   />
@@ -103,11 +104,11 @@ export default function Missions() {
                 
                 {canClaim && (
                   <button 
-                    onClick={() => handleClaim(mission.id)}
-                    disabled={claiming === mission.id}
+                    onClick={() => handleClaim(mission.missionId)}
+                    disabled={claiming === mission.missionId}
                     className="w-full mt-3 py-2 bg-[#00F0FF] text-[#0A0D14] font-black text-xs uppercase tracking-widest rounded-lg hover:bg-[#00D0FF] transition-colors relative overflow-hidden disabled:opacity-50"
                   >
-                     <span className="relative z-10">{claiming === mission.id ? 'Claiming...' : 'Claim Reward'}</span>
+                     <span className="relative z-10">{claiming === mission.missionId ? 'Claiming...' : 'Claim Reward'}</span>
                      <div className="absolute inset-0 bg-white/20 animate-pulse" />
                   </button>
                 )}
