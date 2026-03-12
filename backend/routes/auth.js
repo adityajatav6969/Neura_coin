@@ -73,7 +73,7 @@ router.post('/telegram', async (req, res) => {
         avatar: user.avatar,
         coins: user.coins,
         energy: user.energy,
-        maxEnergy: user.maxEnentent or errors
+        maxEnergy: user.maxEnergy,
         tapPower: user.tapPower,
         autoMiningRate: user.autoMiningRate,
         level: user.level,
