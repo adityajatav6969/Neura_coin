@@ -3,7 +3,7 @@ import { useGame } from '../context/GameContext';
 import { api } from '../utils/api';
 
 export default function Missions() {
-  const { user, updateUser } = useGame();
+  const { updateUser } = useGame();
   const [missions, setMissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [claiming, setClaiming] = useState(null);
@@ -42,7 +42,7 @@ export default function Missions() {
 
   if (loading) return (
     <div className="p-4 flex flex-col items-center justify-center h-64">
-      <div className="text-[#00F0FF] animate-pulse">🎯 Loading Missions...</div>
+      <div className="text-[#00F0FF] animate-pulse">{'\u{1F3AF}'} Loading Missions...</div>
     </div>
   );
 
@@ -50,7 +50,7 @@ export default function Missions() {
     <div className="p-4 flex flex-col h-full min-h-screen">
       <div className="sticky top-0 z-20 bg-[#0A0D14]/90 backdrop-blur-md pb-4 pt-2 -mx-4 px-4 border-b border-[#2D3748]/50 mb-4">
         <h2 className="text-2xl font-black flex items-center mb-2">
-           <span className="text-[#00F0FF] mr-2 text-xl">🎯</span> Next-Gen Missions
+           <span className="text-[#00F0FF] mr-2 text-xl">{'\u{1F3AF}'}</span> Next-Gen Missions
         </h2>
         <p className="text-xs text-gray-400">Complete daily tasks and special assignments for massive coin injections.</p>
       </div>
@@ -59,7 +59,7 @@ export default function Missions() {
         {missions.map((mission) => {
           const percentage = Math.min(100, (mission.progress / mission.target) * 100);
           const canClaim = mission.progress >= mission.target && !mission.completed;
-          
+
           return (
             <div key={mission.missionId} className={`glass-card p-4 rounded-2xl relative transition-all duration-300 ${
               mission.completed ? 'border-[#00F0FF]/50 shadow-[0_0_15px_rgba(0,240,255,0.1)]' : 'border-[#2D3748]/50'
@@ -67,12 +67,12 @@ export default function Missions() {
               {mission.completed && (
                  <div className="absolute inset-0 bg-gradient-to-r from-[#00F0FF]/5 to-transparent rounded-2xl pointer-events-none" />
               )}
-              
+
               <div className="flex items-center mb-3">
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-xl mr-3 shrink-0 ${
                   mission.completed ? 'bg-[#00F0FF]/20 border border-[#00F0FF]/50' : 'bg-[#141923] border border-[#2D3748]'
                 }`}>
-                  {mission.icon || (mission.type === 'tap' ? '👆' : mission.type === 'machine' ? '⚙️' : '👥')}
+                  {mission.icon || (mission.type === 'tap' ? '\u{1F446}' : mission.type === 'machine' ? '\u2699\uFE0F' : '\u{1F465}')}
                 </div>
                 <div className="flex-1">
                   <h3 className={`font-bold leading-tight ${mission.completed ? 'text-[#00F0FF]' : 'text-white'}`}>
@@ -85,7 +85,7 @@ export default function Missions() {
                   <p className="text-[9px] text-gray-500 uppercase tracking-widest font-bold">Reward</p>
                 </div>
               </div>
-              
+
               <div className="pt-2">
                 <div className="flex justify-between items-center text-[10px] uppercase font-bold text-gray-500 tracking-wider mb-1">
                   <span>Progress</span>
@@ -94,16 +94,16 @@ export default function Missions() {
                   </span>
                 </div>
                 <div className="h-2 w-full bg-[#141923] rounded-full overflow-hidden border border-[#2D3748]">
-                  <div 
+                  <div
                     className={`h-full transition-all duration-500 ${
                       mission.completed || canClaim ? 'bg-[#00F0FF] shadow-[0_0_10px_rgba(0,240,255,0.8)]' : 'bg-gray-600'
                     }`}
                     style={{ width: `${percentage}%` }}
                   />
                 </div>
-                
+
                 {canClaim && (
-                  <button 
+                  <button
                     onClick={() => handleClaim(mission.missionId)}
                     disabled={claiming === mission.missionId}
                     className="w-full mt-3 py-2 bg-[#00F0FF] text-[#0A0D14] font-black text-xs uppercase tracking-widest rounded-lg hover:bg-[#00D0FF] transition-colors relative overflow-hidden disabled:opacity-50"
@@ -118,7 +118,7 @@ export default function Missions() {
                     Mission Accomplished
                   </div>
                 )}
-                
+
                 {!mission.completed && !canClaim && (
                    <div className="w-full mt-3 py-2 text-center text-gray-500 font-bold text-[9px] uppercase tracking-widest bg-[#141923] rounded-lg border border-[#2D3748]">
                      In Progress

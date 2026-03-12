@@ -1,13 +1,13 @@
 import { NavLink } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 
 export default function Navigation() {
   const tabs = [
-    { name: 'Home', path: '/', icon: '🏠' },
-    { name: 'Machines', path: '/machines', icon: '⚡' },
-    { name: 'Upgrades', path: '/upgrades', icon: '🚀' },
-    { name: 'Missions', path: '/missions', icon: '🎯' },
-    { name: 'Profile', path: '/profile', icon: '👤' }
+    { name: 'Home', path: '/', icon: '\u{1F3E0}' },
+    { name: 'Machines', path: '/machines', icon: '\u26A1' },
+    { name: 'Upgrades', path: '/upgrades', icon: '\u{1F680}' },
+    { name: 'Missions', path: '/missions', icon: '\u{1F3AF}' },
+    { name: 'Profile', path: '/profile', icon: '\u{1F464}' }
   ];
 
   return (
@@ -29,10 +29,10 @@ export default function Navigation() {
                 <span className="text-[10px] font-bold tracking-widest uppercase z-10">
                   {tab.name}
                 </span>
-                
+
                 {/* Active Indicator Background */}
                 {isActive && (
-                  <motion.div
+                  <Motion.div
                     layoutId="activeTab"
                     className="absolute inset-0 bg-[#00F0FF]/10 rounded-xl neon-border z-0"
                     initial={{ opacity: 0 }}
