@@ -73,7 +73,7 @@ router.post('/telegram', async (req, res) => {
         avatar: user.avatar,
         coins: user.coins,
         energy: user.energy,
-        maxEnergy: user.maxEnergy,
+        maxEnergy: user.maxEnentent or errors
         tapPower: user.tapPower,
         autoMiningRate: user.autoMiningRate,
         level: user.level,
@@ -88,8 +88,8 @@ router.post('/telegram', async (req, res) => {
       offlineEarnings
     });
   } catch (err) {
-    console.error('Auth error:', err);
-    res.status(500).json({ error: 'Server error' });
+    console.error('Auth error:', err.message, err.stack);
+    res.status(500).json({ error: 'Server error', message: err.message });
   }
 });
 
